@@ -1,0 +1,8 @@
+.env
+__pycache__
+.state/
+model/
+logs/
+outputs/
+files/demo.mp4
+files/demo.png

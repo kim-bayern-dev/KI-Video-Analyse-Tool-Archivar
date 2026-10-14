@@ -1,0 +1,81 @@
+# Root .gitignore — union of all project .gitignore files.
+# Patterns apply at any depth, so every subproject is covered.
+
+# --- Environment & secrets (templates stay committable) ---
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# --- Dependencies & virtualenvs ---
+node_modules/
+.venv/
+.uv-cache/
+__pycache__/
+*.py[cod]
+*.pyd
+*.egg-info/
+.Python
+*.so
+
+# --- Model weights & inference caches ---
+model/
+models/
+cache/
+
+# --- Build & framework output ---
+dist/
+.astro/
+outputs/
+.state/
+
+# --- Test, benchmark & eval artifacts ---
+benchmark-results
+tmp/
+out/
+.pytest_cache/
+.ruff_cache/
+.coverage
+evaluation/**/.staging/
+check-file-exists
+
+# --- Logs & runtime/dev artifacts ---
+*.log
+logs/
+.dev.log
+.dev.pid
+.curl-webhook.pid
+.curl-webhook-test.json
+.curl-webhook-test.json.log
+
+# --- OS & editor ---
+.DS_Store
+.idea/
+.roo/
+.zoo/
+.agents/
+.vae/
+.claude/
+.codex/
+
+# --- Project-specific data mounts & scratch dirs ---
+public/data/
+.tmp*/
+_docs/
+_patches/
+_refactoring/
+_CHANGELOG.md
+
+# --- Shared sample data: only the folder skeleton (sample_data/, sample_data/archivar/, sample_data/test/) is versioned, contents are not ---
+sample_data/**
+!sample_data/archivar/
+!sample_data/test/
+!sample_data/archivar/.gitkeep
+!sample_data/test/.gitkeep
+
+# --- Demo asset copies: created dynamically by evaluation/demo/download.sh ---
+segment-scenes/files/zero-frame-scene-source.mp4
+Qwen3.6-35B-A3B-GPTQ-Int4/files/demo.mp4
+Qwen3.6-35B-A3B-GPTQ-Int4/files/demo.png
+Qwen3.8-27B-FP8/files/demo.mp4
+Qwen3.8-27B-FP8/files/demo.png

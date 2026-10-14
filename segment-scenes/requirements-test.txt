@@ -1,0 +1,7 @@
+# Dev/test-only dependencies for segment-scenes tests.
+# Heavy runtime modules (Torch, PyAV, TransNetV2) are stubbed by test/conftest.py.
+click>=8.1,<9
+fastapi>=0.116,<1
+httpx>=0.28,<1
+numpy>=1.26,<3
+pytest>=8.4,<9

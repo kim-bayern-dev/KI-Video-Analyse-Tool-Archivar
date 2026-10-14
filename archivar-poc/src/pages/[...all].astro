@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/base.astro";
+import { Router } from "../csr/router";
+
+// Disable prerendering for this page in case you don't need dynamic server-side state
+// transferred to the client
+export const prerender = false;
+
+// No server-side session resolution happens — the shell always ships
+// APP_PROPS=null; the client auth-store (src/csr/stores/auth-store.ts) owns
+// window.$APP_PROPS from there.
+Astro.locals.APP_PROPS = null;
+
+// REFACTOR(kiss): leftover debug log — fires on every SSR page render and
+// always prints null.
+console.log("APP_PROPS", Astro.locals.APP_PROPS);
+---
+
+<!-- This script exposes the app props to the client-side -->
+<script id="app-props" data-props={JSON.stringify(Astro.locals.APP_PROPS)} is:inline>
+	const appData = document.getElementById("app-props")?.getAttribute("data-props");
+	// see env.d.ts for types; relatively save to expose globals like this
+	// as long as you don't expose any secrets or sensitive data - APP_PROPS is unlikely to be spec'ed by W3C
+	window.$APP_PROPS = appData ? JSON.parse(
+		appData
+	) : null;
+</script>
+
+<BaseLayout title="Archivar">
+	<Router client:only="defuss">
+		<!-- Boot fallback while the CSR router hydrates: a neutral ring
+		     rotating 360° (CSS .app-spinner), centered on screen. -->
+		<div slot="fallback" class="flex items-center justify-center min-h-svh">
+			<span class="app-spinner" style="width: 48px; height: 48px" role="status" aria-label="Loading"></span>
+		</div>
+	</Router>
+</BaseLayout>

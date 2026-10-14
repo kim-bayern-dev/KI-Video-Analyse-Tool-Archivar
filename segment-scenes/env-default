@@ -1,0 +1,33 @@
+# Copy to .env and edit. Make and all shell entry points read these values.
+IMAGE=segment-scenes:latest
+NAME=segment-scenes
+BIND_HOST=127.0.0.1
+PORT=8088
+CONTAINER_PORT=8000
+
+# Persistent bind mounts. Inputs/outputs must live below DATA_DIR.
+DATA_DIR=../sample_data
+MODELS_DIR=./model
+MODEL_FILE=transnetv2-pytorch-weights.pth
+MODEL_PATH=/models/transnetv2-pytorch-weights.pth
+ALLOWED_FILE_ROOTS=/data
+
+# GPU/container resources
+DEVICE=cuda
+GPU_NO=1
+REQUIRE_GPU=1
+CPUS=48
+SHM_MEM_SIZE=16g
+
+# NEVER | TIMEOUT | IMMEDIATE. TIMEOUT is expressed in seconds.
+MODEL_OFFLOADING=NEVER
+MODEL_OFFLOADING_TIMEOUT=60
+
+# Safe acceleration defaults. torch.compile is opt-in and requires NEVER.
+FFMPEG_ACCELERATION=auto
+TORCH_COMPILE=0
+TORCH_COMPILE_MODE=reduce-overhead
+
+LOG_LEVEL=info
+SERVICE_START_TIMEOUT=180
+SEGMENT_SCENES_REQUEST_TIMEOUT=3600

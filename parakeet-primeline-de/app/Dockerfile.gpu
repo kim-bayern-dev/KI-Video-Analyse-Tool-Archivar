@@ -1,0 +1,58 @@
+# Parakeet Primeline DE - GPU Dockerfile
+# German speech transcription with ONNX Runtime CUDA
+
+FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
+
+LABEL maintainer="Parakeet Primeline DE"
+LABEL description="ONNX-optimized German speech transcription service (GPU/CUDA)"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.10 \
+    python3.10-venv \
+    python3-pip \
+    ffmpeg \
+    && ln -sf /usr/bin/python3.10 /usr/bin/python \
+    && ln -sf /usr/bin/python3.10 /usr/bin/python3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+RUN useradd --create-home --shell /bin/bash parakeet
+WORKDIR /app
+
+# requirements.txt is the single dependency source of truth. The ONNX Runtime
+# [cuda,cudnn] extra installs matching runtime libraries; model.py explicitly
+# preloads those wheels before creating CUDA sessions, avoiding system cuDNN
+# major-version mismatches.
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+COPY server.py .
+COPY parakeet_service/ parakeet_service/
+
+RUN mkdir -p models && \
+    chown -R parakeet:parakeet /app
+
+USER parakeet
+
+ENV HF_HOME=/app/models
+ENV HF_HUB_CACHE=/app/models
+ENV HF_HUB_DISABLE_SYMLINKS_WARNING=true
+ENV PYTHONUNBUFFERED=1
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ENV PARAKEET_USE_GPU=true
+ENV PARAKEET_BATCHED=1
+ENV PARAKEET_MAX_BATCH_SIZE=4
+ENV PARAKEET_BATCH_WINDOW_MS=4
+ENV PARAKEET_ORT_INTRA_THREADS=1
+ENV PARAKEET_AUDIO_WORKERS=8
+
+EXPOSE 5092
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5092/healthz')" || exit 1
+
+CMD ["python", "server.py"]

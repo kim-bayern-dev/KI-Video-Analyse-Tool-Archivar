@@ -1,0 +1,23 @@
+(common) {
+  root * /app
+  header {
+    Access-Control-Allow-Origin "*"
+    Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    Access-Control-Allow-Headers "*"
+    Access-Control-Expose-Headers "*"
+  }
+  
+  # Increase timeout for long-running RPC calls (e.g., analyze workflow with 50+ scenes)
+  # Default transport timeout is 30s; set to 12h to match longFetch/undici Agent timeout
+  reverse_proxy 127.0.0.1:8801 {
+    transport http {
+      read_timeout 43200s
+      write_timeout 43200s
+    }
+  }
+}
+
+:80 {
+  import common
+}
+

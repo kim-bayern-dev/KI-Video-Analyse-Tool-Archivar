@@ -1,0 +1,12 @@
+.git
+.env
+.uv-cache
+.venv
+__MACOSX
+model
+out
+patches
+test
+tmp
+**/__pycache__
+**/*.pyc

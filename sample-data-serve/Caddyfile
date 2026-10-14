@@ -1,0 +1,7 @@
+:80 {
+    root * /sample_data
+
+    respond /health 200
+
+    file_server browse
+}

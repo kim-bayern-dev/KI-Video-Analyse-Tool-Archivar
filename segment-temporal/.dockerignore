@@ -1,0 +1,12 @@
+.git
+.venv
+.pytest_cache
+.ruff_cache
+**/__pycache__
+*.py[cod]
+tmp
+plans
+segment-temporal-fast-0.4.0
+HANDOFF.md
+Makefile
+*.zip

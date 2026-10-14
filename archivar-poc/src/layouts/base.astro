@@ -1,0 +1,66 @@
+---
+import "./base.css";
+
+import core from "franken-ui/js/core.iife?url";
+import icon from "franken-ui/js/icon.iife?url";
+
+interface Props {
+  title: string;
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/png" href="/images/logo.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{Astro.props.title}</title>
+    <!-- REFACTOR(dry): duplicated head elements — this viewport <meta> vs the
+         one four lines up (with DIFFERENT content), and the hardcoded
+         <title>Archivar</title> below vs the prop-driven <title> above.
+         Browsers honor the first <title>; the duplicate viewport is
+         implementation-defined. Keep one of each. -->
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Archivar</title>
+
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+
+    <script is:inline>
+      const htmlElement = document.documentElement;
+
+      const __FRANKEN__ = JSON.parse(
+        localStorage.getItem("__FRANKEN__") || "{}",
+      );
+
+      // Runs before first paint: applies the persisted Franken UI theme
+      // classes (saved by the theme switcher in localStorage) so the page
+      // never flashes the default theme. Dark mode is not supported by this
+      // app's palette, so it is forcibly removed.
+      // Force light mode
+      htmlElement.classList.remove("dark");
+
+      htmlElement.classList.add(__FRANKEN__.theme || "uk-theme-zinc");
+      htmlElement.classList.add(__FRANKEN__.radii || "uk-radii-md");
+      htmlElement.classList.add(__FRANKEN__.shadows || "uk-shadows-sm");
+      htmlElement.classList.add(__FRANKEN__.font || "uk-font-sm");
+      htmlElement.classList.add(__FRANKEN__.chart || "uk-chart-default");
+    </script>
+
+    <script is:inline src={core} type="module"></script>
+	</head>
+
+	<body class="bg-background font-geist-sans text-foreground antialiased">
+		<slot />
+
+    <script is:inline src={icon} type="module"></script>
+    
+    <!-- Highlight.js for JSON syntax highlighting in Raw Output tab -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  </body>
+</html>

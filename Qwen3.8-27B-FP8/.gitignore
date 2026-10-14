@@ -1,0 +1,5 @@
+__pycache__
+.env
+model/
+benchmarks/files/demo.mp4
+files/demo.png

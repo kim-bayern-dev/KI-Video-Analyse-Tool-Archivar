@@ -1,0 +1,588 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Archivar Public API",
+    "description": "Public REST API endpoints for triggering analysis workflows and checking status. No authentication required.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8801",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/api/analyze": {
+      "post": {
+        "summary": "Trigger analysis workflow",
+        "description": "Starts an analysis workflow for a file. Returns immediately with status 'processing'. Poll /api/raw to check completion.",
+        "operationId": "analyze",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analysis started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyzeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameter: file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/raw": {
+      "get": {
+        "summary": "Get raw analysis result",
+        "description": "Returns the status and raw JSON result of an analysis workflow. Use polling to wait for completion.",
+        "operationId": "raw",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "query",
+            "required": true,
+            "description": "The file path to check",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status and result (if done)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RawResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameter: file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/logs": {
+      "get": {
+        "summary": "Get debug logs",
+        "description": "Returns the debug log content for a file's analysis workflow.",
+        "operationId": "logs",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "query",
+            "required": true,
+            "description": "The file path to get logs for",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Log status and data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameter: file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/list": {
+      "get": {
+        "summary": "List files",
+        "description": "Lists all files in the data directory, optionally filtered by a glob pattern.",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "pattern",
+            "in": "query",
+            "required": false,
+            "description": "Glob pattern to filter files (default: *)",
+            "schema": {
+              "type": "string",
+              "default": "*"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/export": {
+      "get": {
+        "summary": "Download an export of the analysis result",
+        "description": "Generates (or reuses) an export file for an analysis result and streams it as a download. Export files live on disk under <file>.archivar/exports/. Formats: docx and md replicate the 'All Results' UI tab; json is the curated download view; raw is the verbatim debug.json; log is the verbatim debug.log; srt is a SubRip subtitle file from the per-clip ASR timings; vct is a Vision Caption Transcript (SRT structure with Markdown scene/keyframe captions); errors, vlm-requests and asr-requests are verbatim copies of the run's error/request artifacts.",
+        "operationId": "export",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "query",
+            "required": true,
+            "description": "The file path to export",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": true,
+            "description": "Export format",
+            "schema": {
+              "type": "string",
+              "enum": ["docx", "md", "json", "raw", "log", "srt", "vct", "errors", "vlm-requests", "asr-requests"]
+            }
+          },
+          {
+            "name": "force",
+            "in": "query",
+            "required": false,
+            "description": "Regenerate the export even if it already exists on disk",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "view",
+            "in": "query",
+            "required": false,
+            "description": "With view=filtered, docx/md/json are rendered from the reduced result view (summary + higher-order aggregations; used by the dashboard download links). raw/log/srt/vct are verbatim artifacts and never filtered.",
+            "schema": {
+              "type": "string",
+              "enum": ["filtered"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The export file (Content-Type depends on format; Content-Disposition: attachment)",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {},
+              "text/markdown": {},
+              "application/json": {},
+              "text/plain": {}
+            }
+          },
+          "400": {
+            "description": "Missing or invalid parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No analysis found for the file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "summary": "List task statuses",
+        "description": "Lists task statuses (one per analyzed file's .archivar/status.json), newest first. Useful for harnesses polling tasks currently in processing.",
+        "operationId": "status",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Filter by task status; omit (or pass 'all') to list every known task",
+            "schema": {
+              "type": "string",
+              "enum": ["processing", "done", "error", "all"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of task statuses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status filter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clear-cache": {
+      "delete": {
+        "summary": "Clear file cache",
+        "description": "Clears all cache and output files for a specific file.",
+        "operationId": "clearCache",
+        "parameters": [
+          {
+            "name": "file",
+            "in": "query",
+            "required": true,
+            "description": "The file path to clear cache for",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cache cleared or file not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClearCacheResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameter: file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnalyzeRequest": {
+        "type": "object",
+        "required": ["file"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "File path to analyze (relative to data directory)"
+          },
+          "workflow": {
+            "type": "string",
+            "description": "Workflow name to use (default: from config)"
+          },
+          "force": {
+            "type": "boolean",
+            "description": "Bypass cache and force fresh analysis"
+          },
+          "webHookUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to POST results to when analysis completes"
+          },
+          "format": {
+            "type": "string",
+            "enum": ["json", "md", "toon"],
+            "default": "json",
+            "description": "Output format"
+          },
+          "only": {
+            "type": "string",
+            "description": "Only run a specific step"
+          },
+          "overrides": {
+            "type": "object",
+            "description": "Workflow processing step overrides"
+          },
+          "postProcessingOverrides": {
+            "type": "object",
+            "description": "Post-processing configuration overrides"
+          },
+          "exports": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["docx", "md", "json", "raw", "log", "srt", "vct", "errors", "vlm-requests", "asr-requests"]
+            },
+            "description": "Export formats to generate eagerly on completion; references appear in poll + webhook responses"
+          }
+        }
+      },
+      "AnalyzeResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "file": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["processing", "done"]
+          }
+        }
+      },
+      "RawResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["processing", "done", "error"]
+          },
+          "file": {
+            "type": "string"
+          },
+          "result": {
+            "type": "object",
+            "description": "The analysis result object (JSON) - present when status is done"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message - present when status is error"
+          }
+        }
+      },
+      "LogsResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string",
+            "description": "Debug log content"
+          }
+        }
+      },
+      "ClearCacheResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["cleared", "error"]
+          },
+          "removed": {
+            "type": "integer",
+            "description": "Number of items removed"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      },
+      "StatusListResponse": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatusFile"
+            }
+          }
+        }
+      },
+      "StatusFile": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["processing", "done", "error"]
+          },
+          "file": {
+            "type": "string"
+          },
+          "workflow": {
+            "type": "string"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "error": {
+            "type": "string"
+          },
+          "webHookUrl": {
+            "type": "string"
+          },
+          "webHookDelivered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FileInfo": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "extension": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string",
+            "enum": ["video", "audio", "image"]
+          },
+          "serverUrl": {
+            "type": "string"
+          },
+          "outputHash": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

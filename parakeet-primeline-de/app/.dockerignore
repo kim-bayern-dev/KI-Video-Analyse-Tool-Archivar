@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*.egg-info
+.venv
+venv
+
+# IDE
+.vscode
+.idea
+
+# Tests (not needed in the image)
+tests/
+
+# Logs and runtime artifacts
+*.log
+server.log
+temp_uploads/
+
+# Models (downloaded at runtime into the mounted cache)
+models/

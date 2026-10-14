@@ -1,0 +1,5 @@
+benchmark-results
+tmp/
+model/
+.env
+__pycache__/
