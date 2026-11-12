@@ -111,5 +111,5 @@ Das KI-Kompetenzzentrum Medien (KI.M) ist ein gemeinsames Vorhaben der Bayerisch
 
 **Mehr erfahren:** [Unsere Website](https://www.kim-bayern.de/)
 
-<img src="KIM_Wortmarke.png" alt="KI.M Logo" width="300">
+<img src="KI.M_Wortmarke.png" alt="KI.M Logo" width="300">
 
