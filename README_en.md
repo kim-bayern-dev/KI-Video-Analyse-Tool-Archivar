@@ -99,7 +99,7 @@ Copyright (c) 2026 Medien.Bayern GmbH.
 
 ## Contributors
 
-Original development by the Medien.Bayern GmbH ([KI.M](https://www.kim-bayern.de/)) - main developer: [Aron Homberg](https://aron-homberg.de).
+Original development by the Medien.Bayern GmbH ([KI.M](https://www.kim-bayern.de/)) in collaboration with: [Aron Homberg](https://aron-homberg.de).
 
 ## A project of KI-Kompetenzzentrum Medien (KI.M)
 
@@ -107,8 +107,8 @@ The KI-Kompetenzzentrum Medien (KI.M) is the central hub for artificial intellig
 
 We provide independent information and hands-on demonstrations of AI capabilities and limitations in media applications. Through our AI Lab, we collaborate with partners to test real-world implementations. Our feasibility studies are published as reports on our website, while the technical foundations and code are shared here in our repositories.
 
-The KI.M is a joint initiative of the Bayerische Landeszentrale für neue Medien (BLM) and Medien.Bayern GmbH, supported by the Bavarian State Chancellery.
+The KI-Kompetenzzentrum Medien (KI.M) is a joint initiative of the Bavarian State Office for New Media (BLM) and Medien.Bayern GmbH, with funding from the Bavarian State Chancellery.
 
 **Learn more:** [Visit our website](https://www.kim-bayern.de/)
 
-<img src="RZ_Logo_KIM_RGB_D-Blau.png" alt="KI.M Logo" width="300">
+<img src="KIM_Wortmarke.png" alt="KI.M Logo" width="300">

@@ -6,10 +6,10 @@
 > Die Standardkonfiguration **S** wird nicht für den Produktiveinsatz empfohlen, sondern dient primär dem Test der technischen Funktionalität des Systems im Rahmen von E2E-Tests. Die beste Ergebnisqualität wird mit der Konfiguration **L** erzielt; die Konfiguration **M** stellt einen sinnvollen Kompromiss zwischen Qualität und Geschwindigkeit dar. Details finden sich in den Evaluationsergebnissen im Abschlussbericht.
 
 > [!WARNING]
-> Erwarten Sie bitte keinen produktionsreifen Programmcode. Dies ist ein Forschungsprototyp, der die Fähigkeiten von LLMs und multimodalen KI-Systemen im Kontext von Medienarchivierung demonstriert. Nutzung auf eigene Gefahr. 
+> Bei diesem Prototyp handelt es sich nicht um produktionsreifen Programmcode. Dies ist ein Forschungsprototyp, der die Fähigkeiten von LLMs und multimodalen KI-Systemen im Kontext von Medienarchivierung demonstriert. Nutzung auf eigene Gefahr. 
 
 > [!WARNING]
-> **KI-Kennzeichnung:** Alle Analyse-Ergebnisse des Archivar-Systems sind vollständig KI-generiert. Die KI kann Fehler machen. Bitte prüfen Sie wichtige Informationen.
+> **KI-Kennzeichnung:** Alle Analyse-Ergebnisse des Archivar-Systems sind vollständig KI-generiert. Die KI kann Fehler machen. Wichtige Informationen sind zu prüfen.
 
 Das KI-Video-Analyse-Tool Archivar ist eine technisch vollständige Lösung für die KI-gestützte Video- und Audioanalyse. Es besteht aus einer Hauptanwendung (`archivar-poc`) plus eigenständigen, containerisierten Inferenzservern (vLLM, OpenAI-kompatible APIs). Inferenzserver liegen in den T-Shirt-Size-Konfigurationen S, M und L vor und sind funktionsfähig - müssen jedoch für die individuelle Hardware konfiguriert werden. Alle Teile des Systems greifen auf ein gemeinsame Medienverzeichnis (`sample_data`) zu.
 
@@ -43,7 +43,7 @@ Die Konfigurationen **M** und **L** werden bewusst nicht über das Root-Makefile
 ## Konfigurationen
 
 > [!IMPORTANT]
-> KI-Inferenz-Server erfordern das vorhandensein seiner vom Inferenz-Server für das gewählte KI-Modell unterstützen Grafikkarte (GPU) mit ausreichender Menge Speicher (VRAM). Der Inferenz-Server muss außerdem so eingestellt werden (Konfiguration), dass er einerseits die richtige GPU verwendet, wenn mehrere vorhanden sind und andererseits auch die optimale Variante für Attention und KV-Cache. Die vorliegende S-Konfiguration is auf NVIDIA-Systeme ausgelegt und wurde mit NVIDIA H200 NVL sowie RTX 3090 GPUs getestet. Die M und L-Konfigurationen wurden ausschließlich auf NVIDIA H200 NVL GPUs getestet. Bitte entnehmen Sie die notwendigen Konfigurationsparameter, die für Ihre GPU-Hardware gelten, der Inferenz-Server-Dokumentation (z.B. vLLM-Projekt).
+> KI-Inferenz-Server erfordern das vorhandensein seiner vom Inferenz-Server für das gewählte KI-Modell unterstützen Grafikkarte (GPU) mit ausreichender Menge Speicher (VRAM). Der Inferenz-Server muss außerdem so eingestellt werden (Konfiguration), dass er einerseits die richtige GPU verwendet, wenn mehrere vorhanden sind und andererseits auch die optimale Variante für Attention und KV-Cache. Die vorliegende S-Konfiguration is auf NVIDIA-Systeme ausgelegt und wurde mit NVIDIA H200 NVL sowie RTX 3090 GPUs getestet. Die M und L-Konfigurationen wurden ausschließlich auf NVIDIA H200 NVL GPUs getestet. Die notwendigen Konfigurationsparameter, die für die vorhandnee GPU-Hardware gelten, sind in der Inferenz-Server-Dokumentation (z.B. vLLM-Projekt) zu prüfen.
 
 Die Hauptanwendung (`archivar-poc`) definiert drei Workflow-Konfigurationen; jede kombiniert ein VLM für die Video-/Bildanalyse mit einem ASR-Server für die Transkription:
 
@@ -99,7 +99,7 @@ Copyright (c) 2026 Medien.Bayern GmbH.
 
 ## Mitwirkende
 
-Originalentwicklung durch die Medien.Bayern GmbH ([KI.M](https://www.kim-bayern.de/))-Hauptentwickler: [Aron Homberg](https://aron-homberg.de).
+Originalentwicklung durch die Medien.Bayern GmbH ([KI.M](https://www.kim-bayern.de/)) in Zusammenarbeit mit [Aron Homberg](https://aron-homberg.de).
 
 ## Ein Projekt des KI-Kompetenzzentrums Medien (KI.M)
 
@@ -107,9 +107,9 @@ Das KI-Kompetenzzentrum Medien (KI.M) ist die zentrale Anlaufstelle für künstl
 
 Wir bieten unabhängige Informationen und praxisnahe Demonstrationen der Möglichkeiten und Grenzen von KI in Medienanwendungen. In unserem KI-Labor arbeiten wir mit Partnern an realen Implementierungen. Unsere Machbarkeitsstudien veröffentlichen wir als Berichte auf unserer Website; die technischen Grundlagen und den Code teilen wir hier in unseren Repositories.
 
-KI.M ist eine gemeinsame Initiative der Bayerischen Landeszentrale für neue Medien (BLM) und der Medien.Bayern GmbH, unterstützt von der Bayerischen Staatskanzlei.
+Das KI-Kompetenzzentrum Medien (KI.M) ist ein gemeinsames Vorhaben der Bayerischen Landeszentrale für neue Medien (BLM) und der Medien.Bayern GmbH mit Förderung durch die Bayerische Staatskanzlei.
 
-**Mehr erfahren:** [Besuchen Sie unsere Website](https://www.kim-bayern.de/)
+**Mehr erfahren:** [Unsere Website](https://www.kim-bayern.de/)
 
-<img src="RZ_Logo_KIM_RGB_D-Blau.png" alt="KI.M Logo" width="300">
+<img src="KIM_Wortmarke.png" alt="KI.M Logo" width="300">
 
