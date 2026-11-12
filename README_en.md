@@ -111,4 +111,4 @@ The KI-Kompetenzzentrum Medien (KI.M) is a joint initiative of the Bavarian Stat
 
 **Learn more:** [Visit our website](https://www.kim-bayern.de/)
 
-<img src="KI.M_Wortmarke.png" alt="KI.M Logo" width="300">
+[![logo-kim](RZ_Logo_KIM_RGB_Weiss.png)](https://www.kim-bayern.de/)
